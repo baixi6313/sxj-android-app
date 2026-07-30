@@ -18,6 +18,8 @@
   TYPES.forEach(function (t) { TYPE_LABEL[t.key] = t.label; });
   STATUSES.forEach(function (s) { STATUS_MAP[s.key] = s; });
 
+  var CURRENT_VERSION = '1.0.0';
+  var VERSION_URL = 'https://raw.githubusercontent.com/baixi6313/sxj-android-app/main/version.json';
   var state = { tab: 'events', filter: 'all', events: [] };
   var view = document.getElementById('view');
   var modalRoot = document.getElementById('modal-root');
@@ -105,7 +107,9 @@
     var added = state.events.filter(function (e) { return e.id.indexOf('local_') === 0; }).length;
     var html = ''
       + '<div class="sec-title">我的</div>'
-      + '<div class="info"><b>事现鉴</b> · 共创论公共事实验证工具<br>版本 1.0 (BETA) · 数据更新 2026-07-30</div>'
+      + '<div class="info"><b>事现鉴</b> · 共创论公共事实验证工具<br>版本 ' + CURRENT_VERSION + ' (BETA) · 数据更新 2026-07-30</div>'
+      + '<div class="info" id="update-info">当前版本：' + CURRENT_VERSION + '</div>'
+      + '<button class="btn ghost" id="btn-update" style="margin-bottom:11px">检查更新</button>'
       + '<div class="info">本地事现总数：<b>' + state.events.length + '</b> 条<br>其中你新增：<b>' + added + '</b> 条</div>'
       + '<div class="info">数据保存在本机（SharedPreferences / 浏览器本地）。本 App 为离线工具，未联网上传。</div>'
       + '<div class="row" style="margin-top:6px">'
@@ -114,6 +118,7 @@
       + '</div>'
       + '<div class="info" style="margin-top:12px">验证权威：仅「事现鉴 + Gzz」。<br>治理消失条件：全球共济值 ≥ 50%。</div>';
     view.innerHTML = html;
+    document.getElementById('btn-update').onclick = checkUpdate;
     document.getElementById('btn-export').onclick = function () {
       var blob = 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(state.events, null, 2));
       var a = document.createElement('a'); a.href = blob; a.download = 'sxj_events.json'; a.click();
@@ -123,6 +128,48 @@
       state.events = state.events.filter(function (e) { return e.id.indexOf('local_') !== 0; });
       save(); render();
     };
+  }
+
+  function checkUpdate() {
+    var btn = document.getElementById('btn-update');
+    var info = document.getElementById('update-info');
+    if (btn) { btn.disabled = true; btn.textContent = '检查中…'; }
+    if (info) info.textContent = '正在查询最新版本…';
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', VERSION_URL + '?_=' + Date.now(), true);
+    xhr.timeout = 15000;
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState !== 4) return;
+      if (xhr.status === 200) {
+        try {
+          var data = JSON.parse(xhr.responseText);
+          if (data.version && data.version !== CURRENT_VERSION) {
+            if (info) {
+              info.innerHTML = '发现新版本 <b>' + esc(data.version) + '</b>'
+                + (data.notes ? '<br><span style="color:#666;font-size:12px">' + esc(data.notes) + '</span>' : '')
+                + '<br><a href="' + esc(data.url) + '" class="btn" style="display:inline-block;margin-top:10px;width:auto;padding:10px 20px">下载新版本 APK</a>';
+            }
+          } else {
+            if (info) info.innerHTML = '当前已是最新版本 <b>' + CURRENT_VERSION + '</b>';
+          }
+        } catch (e) {
+          if (info) info.textContent = '版本信息解析失败';
+        }
+      } else {
+        if (info) info.textContent = '检查失败，请确认网络连接后重试';
+      }
+      if (btn) { btn.disabled = false; btn.textContent = '检查更新'; }
+    };
+    xhr.onerror = function () {
+      if (info) info.textContent = '检查失败，请确认网络连接后重试';
+      if (btn) { btn.disabled = false; btn.textContent = '检查更新'; }
+    };
+    xhr.ontimeout = function () {
+      if (info) info.textContent = '检查超时，请确认网络连接后重试';
+      if (btn) { btn.disabled = false; btn.textContent = '检查更新'; }
+    };
+    xhr.send();
   }
 
   function openDetail(id) {
