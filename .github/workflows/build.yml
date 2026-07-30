@@ -5,6 +5,9 @@ on:
     branches: [main, master]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -39,6 +42,11 @@ jobs:
         with:
           name: sxj-app-debug
           path: app/build/outputs/apk/debug/*.apk
+
+      - name: Publish APK to Release v1.0
+        run: gh release upload v1.0 app/build/outputs/apk/debug/app-debug.apk --clobber
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build release AAB
         if: ${{ env.SXJ_KEYSTORE_BASE64 != '' }}
