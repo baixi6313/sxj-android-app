@@ -9,6 +9,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.Intent;
+import android.net.Uri;
 
 public class MainActivity extends Activity {
 
@@ -31,7 +33,18 @@ public class MainActivity extends Activity {
         // 原生存储桥：让网页里的"事现记录"能可靠持久化到本机
         webView.addJavascriptInterface(new SxjBridge(this), "SxjBridge");
 
-        webView.setWebViewClient(new WebViewClient());
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                // 外部 http/https 链接（如下载新版 APK）交给系统浏览器
+                if (url != null && (url.startsWith("http://") || url.startsWith("https://"))) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    startActivity(intent);
+                    return true;
+                }
+                return false;
+            }
+        });
         webView.setWebChromeClient(new WebChromeClient());
 
         webView.loadUrl("file:///android_asset/www/index.html");
