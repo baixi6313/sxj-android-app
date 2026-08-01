@@ -107,7 +107,7 @@
     var added = state.events.filter(function (e) { return e.id.indexOf('local_') === 0; }).length;
     var html = ''
       + '<div class="sec-title">我的</div>'
-      + '<div class="info"><b>事现鉴</b> · 共创论公共事实验证工具<br>版本 ' + CURRENT_VERSION + ' (BETA) · 数据更新 2026-07-30</div>'
+      + '<div class="info"><b>事现鉴</b> · 共创论公共事实验证工具<br>版本 ' + CURRENT_VERSION + ' · 数据更新 2026-07-30</div>'
       + '<div class="info" id="update-info">当前版本：' + CURRENT_VERSION + '</div>'
       + '<button class="btn ghost" id="btn-update" style="margin-bottom:11px">检查更新</button>'
       + '<div class="info">本地事现总数：<b>' + state.events.length + '</b> 条<br>其中你新增：<b>' + added + '</b> 条</div>'
