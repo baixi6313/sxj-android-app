@@ -56,7 +56,18 @@ jobs:
           name: sxj-app-release
           path: app/build/outputs/bundle/release/*.aab
 
-      - name: Publish debug APK to Release v1.0
+      - name: Resolve version
+        id: ver
+        run: |
+          V=$(grep -oP 'versionName\s+"\K[^"]+' app/build.gradle)
+          echo "version=$V" >> $GITHUB_OUTPUT
+          echo "解析到 versionName = $V"
+
+      - name: Publish debug APK to versioned Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload v1.0 app/build/outputs/apk/debug/app-debug.apk --clobber --repo baixi6313/sxj-android-app
+        run: |
+          TAG="v${{ steps.ver.outputs.version }}"
+          gh release view "$TAG" --repo baixi6313/sxj-android-app >/dev/null 2>&1 \
+            || gh release create "$TAG" --title "事现鉴 App $TAG" --notes "自动构建发布 $TAG" --repo baixi6313/sxj-android-app
+          gh release upload "$TAG" app/build/outputs/apk/debug/app-debug.apk --clobber --repo baixi6313/sxj-android-app
