@@ -5,12 +5,11 @@ on:
     branches: [main, master]
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     env:
       SXJ_KEYSTORE_BASE64: ${{ secrets.SXJ_KEYSTORE_BASE64 }}
       SXJ_KEYSTORE_PASSWORD: ${{ secrets.SXJ_KEYSTORE_PASSWORD }}
@@ -43,11 +42,6 @@ jobs:
           name: sxj-app-debug
           path: app/build/outputs/apk/debug/*.apk
 
-      - name: Publish APK to Release v1.0
-        run: gh release upload v1.0 app/build/outputs/apk/debug/app-debug.apk --clobber
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Build release AAB
         if: ${{ env.SXJ_KEYSTORE_BASE64 != '' }}
         uses: gradle/gradle-build-action@v3
@@ -61,3 +55,8 @@ jobs:
         with:
           name: sxj-app-release
           path: app/build/outputs/bundle/release/*.aab
+
+      - name: Publish debug APK to Release v1.0
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload v1.0 app/build/outputs/apk/debug/app-debug.apk --clobber --repo baixi6313/sxj-android-app
