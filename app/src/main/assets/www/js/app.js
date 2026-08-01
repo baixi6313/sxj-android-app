@@ -18,7 +18,7 @@
   TYPES.forEach(function (t) { TYPE_LABEL[t.key] = t.label; });
   STATUSES.forEach(function (s) { STATUS_MAP[s.key] = s; });
 
-  var CURRENT_VERSION = '1.0.0';
+  var CURRENT_VERSION = '1.0.2';
   var VERSION_URL = 'https://raw.githubusercontent.com/baixi6313/sxj-android-app/main/version.json';
   var state = { tab: 'events', filter: 'all', events: [] };
   var view = document.getElementById('view');
@@ -91,6 +91,7 @@
       { f: 'theory/whitepaper.html', t: '白皮书' },
       { f: 'theory/concept_tree.html', t: '概念树' },
       { f: 'theory/knowledge_tree.html', t: '知识树' },
+      { f: 'history.html', t: '发展历史' },
       { f: 'theory/events.html', t: '事件簿（网页版案例库）' }
     ];
     var html = '<div class="sec-title">理论阅读</div><div class="theory-list">';
@@ -237,14 +238,25 @@
   // 底部 tab + FAB
   document.querySelectorAll('.tabbar button').forEach(function (b) {
     b.onclick = function () {
+      var tab = b.getAttribute('data-tab');
+      // 组织是独立页面（org.html），其余为本页 SPA 视图
+      if (tab === 'org') { location.href = 'org.html'; return; }
       document.querySelectorAll('.tabbar button').forEach(function (x) { x.classList.remove('active'); });
       b.classList.add('active');
-      state.tab = b.getAttribute('data-tab');
+      state.tab = tab;
       render();
     };
   });
   document.getElementById('fab').onclick = openAdd;
 
   load();
+  // 支持从其他页面经 hash 回到指定 tab（如 index.html#theory / #mine）
+  var h = location.hash.replace('#', '');
+  if (h === 'theory' || h === 'mine' || h === 'events') {
+    state.tab = h;
+    document.querySelectorAll('.tabbar button').forEach(function (x) {
+      x.classList.toggle('active', x.getAttribute('data-tab') === h);
+    });
+  }
   render();
 })();
