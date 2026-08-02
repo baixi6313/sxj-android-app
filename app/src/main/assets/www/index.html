@@ -136,7 +136,7 @@
     <span style="display:flex;gap:6px;align-items:center;"><span>📶</span><span>🔋</span></span>
   </div>
   <div class="brandbar">
-    <div class="logo"><span class="ring"></span>事现鉴 · SXJ</div>
+    <div class="logo"><svg class="logo-svg" viewBox="0 0 28 28" width="24" height="24" aria-label="事现鉴 logo"><circle cx="14" cy="14" r="12.5" fill="none" stroke="#D8132A" stroke-width="2.6"/><path d="M6 14 L21 8 M6 14 L21 20" fill="none" stroke="#C9A24B" stroke-width="2" stroke-linecap="round"/><circle cx="6" cy="14" r="2.6" fill="#D8132A"/></svg>事现鉴 · SXJ</div>
     <span class="beta">root → spec</span>
   </div>
 
@@ -183,11 +183,11 @@
       <label class="fld">主张（一句话说清发生了什么）</label>
       <textarea class="inp" id="f-claim" placeholder="例：某平台对话分享链接无法生成，跨 5 家均复现"></textarea>
       <div class="grid2">
-        <div><label class="fld">x · 平台</label><input class="inp" id="f-x" value="微博"></div>
-        <div><label class="fld">y · 账号</label><input class="inp" id="f-y" value="白玺-寰宇光锥舟"></div>
+        <div><label class="fld">x · 平台</label><input class="inp" id="f-x" placeholder="例：微博 / WorkBuddy"></div>
+        <div><label class="fld">y · 账号</label><input class="inp" id="f-y" placeholder="例：白玺-寰宇光锥舟"></div>
       </div>
       <div class="grid2">
-        <div><label class="fld">z · 上下文</label><input class="inp" id="f-z" value="G-9 实证"></div>
+        <div><label class="fld">z · 上下文</label><input class="inp" id="f-z" placeholder="例：G-9 实证"></div>
         <div><label class="fld">t · 时间戳</label><input class="inp" id="f-t" value="自动" disabled></div>
       </div>
       <div class="grid2">
@@ -258,20 +258,7 @@ var t2=(rr(a,2)^rr(a,13)^rr(a,22))+((a&h[1])^(a&h[2])^(h[1]&h[2]));h=[t1+t2|0].c
 for(i=0;i<8;i++)h[i]=(h[i]+oh[i])|0;}for(i=0;i<8;i++){for(j=3;j+1;j--){var b=(h[i]>>(j*8))&255;result+=((b<16)?'0':'')+b.toString(16);}}return result;}
 
 /* ============ 数据 ============ */
-const SEED=[
- {id:"evt_009",claim:"跨平台 AI 分享链接不可用性（G-9）",x:"多平台",y:"白玺-寰宇光锥舟",z:"MAIP §6.1 圆桌互见",t:"2026-08-02",j:"中国",lon:105,lat:35,
-  desc:"WorkBuddy/千问/百度搭子/元宝/DeepSeek 均出现过对话分享链接无法生成或渲染，圆桌互见依赖的可分享链接作为广播载体不稳定。",
-  evi:["两张截图（SHA-256 已存）"],rho:0.5355,support:0,question:0,status:"recording"},
- {id:"evt_010",claim:"境外朋友委托复测 G-9（跨境验证模式首现）",x:"国外大模型",y:"白玺朋友→白玺",z:"验证模式出现",t:"2026-08-02",j:"国际",lon:-40,lat:48,
-  desc:"白玺委托境外朋友在国外大模型复测 G-9。证据链多一层转手，按事现鉴规矩只记为低置信度辅助事现，不升级 evt_009。",
-  evi:["微信截图（SHA-256 ca13ab2e…）","朋友转述（无直接平台截图）"],rho:0.2700,support:0,question:0,status:"recording"},
- {id:"evt_001",claim:"南京博物院《江南春》等藏品流向拍卖",x:"网络",y:"事现鉴",z:"公众知情权",t:"2026-02-09",j:"中国",lon:105,lat:35,
-  desc:"捐赠藏品被质疑失踪后现身拍卖，公众交叉验证推动省级调查组通报，24 人被查、4 幅追回。",
-  evi:["工信部备案信息 / 多家媒体报道截图"],rho:0.91,support:128,question:6,status:"verified"},
- {id:"evt_004",claim:"耿同学学术打假：图像数据造假交叉验证",x:"学术圈",y:"事现鉴",z:"基本事实",t:"2026-03-20",j:"中国",lon:105,lat:35,
-  desc:"多名网友交叉验证某论文图像数据疑似造假，推动作者回应与机构介入。",
-  evi:["论文原文 / 网友比对图 / 机构通报"],rho:0.88,support:212,question:4,status:"verified"}
-];
+const SEED=[];
 
 let events = loadEvents();
 let contrib = loadContrib();
